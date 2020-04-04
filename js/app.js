@@ -36,6 +36,35 @@ function createNavElement(section) {
     navbarList.appendChild(li);
 }
 
+function addActiveNavClass() {
+    const scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    const currentLinks = document.querySelectorAll('.navbar__menu a');
+    const navHeight = document.querySelector('.navbar__menu').offsetHeight;
+
+    for (currLink of currentLinks) {
+        const val = currLink.getAttribute('href');
+        const refElement = document.querySelector(val);
+        if( refElement.offsetTop - navHeight <= scrollPos && ( refElement.offsetTop + refElement.offsetHeight > scrollPos)){
+            document.querySelector('.navbar__menu ul li a').classList.remove('active__menu');
+            currLink.classList.add('active__menu');
+        }else{
+            currLink.classList.remove('active__menu');
+        }
+    }
+}
+
+function addActiveSectionClass() {
+    for(const section of sections) {
+        const bounds = section.getBoundingClientRect();
+        const breakpoint =   window.innerHeight - bounds.height;
+        if(bounds.top <= breakpoint && bounds.top >= (0 - bounds.height) ) {    
+            section.classList.add('your-active-class');
+        } else {
+            section.classList.remove('your-active-class');
+        }
+    }
+}
+
 /**
  * End Helper Functions
  * Begin Main Functions
@@ -51,16 +80,12 @@ function buildMenu(sections) {
 
 // Add class 'active' to section when near top of viewport
 function addActiveClass() {
-    for(const section of sections) {
-        const bounds = section.getBoundingClientRect();
-        const breakpoint =   window.innerHeight - bounds.height;
-        if(bounds.top <= breakpoint && bounds.top >= (0 - bounds.height) ) {    
-            section.classList.add('your-active-class');
-        } else {
-            section.classList.remove('your-active-class');
-        }
-    }
+    setTimeout(addActiveNavClass, 0);
+    setTimeout(addActiveSectionClass, 0);
 }
+
+
+           
 
 // Scroll to anchor ID using scrollTO event
 function scrollToSection(evt) {
